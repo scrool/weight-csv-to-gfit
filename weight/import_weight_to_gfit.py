@@ -14,12 +14,6 @@ from oauth2client.client import OAuth2WebServerFlow
 from read_weight_csv import read_weights_csv_with_gfit_format
 from googleapiclient.errors import HttpError
 
-# Setup for Google API:
-# Steps:
-# 1. Go https://console.developers.google.com/apis/credentials
-# 2. Create credentials => OAuth Client ID
-# 3. Set Redirect URI to your URL or the playground https://developers.google.com/oauthplayground
-# 4. Download the client secret json file and rename it to "client_secret.json"
 f = open('../client_secret.json', 'r')
 data = f.read()
 jsondata = json.loads(data)
@@ -28,25 +22,17 @@ secrets = jsondata['web']
 CLIENT_ID = secrets['client_id']
 CLIENT_SECRET = secrets['client_secret']
 
-# Redirect URI to google Fit, See Steps 3 above
-# REDIRECT_URI='https://developers.google.com/oauthplayground'
 REDIRECT_URI = secrets['redirect_uris'][0]
 PROJECT_ID = secrets['project_id']
 
 # See scope here: https://developers.google.com/fit/rest/v1/authorization
 SCOPE = 'https://www.googleapis.com/auth/fitness.body.write'
 
-# API Key
-# Steps:
-# 1. Go https://console.developers.google.com/apis/credentials
-# 2. Create credentials => API Key => Server Key
-# 3. Save it as apt_key.txt
 f = open("../api_key.txt", "r")
 API_KEY = f.read()
 
 def import_weight_to_gfit():
     # first step of auth
-    # only approved IP is my Digital Ocean Server
     flow = OAuth2WebServerFlow(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, scope=SCOPE, redirect_uri=REDIRECT_URI)
     auth_uri = flow.step1_get_authorize_url()
     print "Copy this url to web browser for authorization: "
