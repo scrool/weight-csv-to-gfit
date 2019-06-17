@@ -5,8 +5,7 @@ import dateutil.parser
 from dateutil import zoneinfo
 
 DAWN_TIME = datetime.datetime(1970, 1, 1, tzinfo=dateutil.tz.tzutc())
-TIME_ZONE = zoneinfo.gettz("America/New_York")
-POUNDS_PER_KILOGRAM = 2.20462
+TIME_ZONE = zoneinfo.gettz('Europe/Berlin')
 
 def nano(val):
   """Converts a number to nano (str)."""
@@ -17,7 +16,6 @@ def epoch_of_time_str(dateTimeStr, tzinfo):
   return (log_time - DAWN_TIME).total_seconds()
 
 def read_weights_csv():
-    print "Reading Weights"
     is_header = True
     weights = []
     with open('weights.csv', 'rb') as csvfile:
@@ -32,7 +30,7 @@ def read_weights_csv():
                 ))
     return weights
 
-def read_weights_csv_with_gfit_format():
+def read_weights_csv_with_gfit_format(unit):
     weights = read_weights_csv()
     gfit_weights = []
     for weight in weights:
@@ -40,7 +38,7 @@ def read_weights_csv_with_gfit_format():
             dataTypeName='com.google.weight',
             endTimeNanos=nano(weight["seconds_from_dawn"]),
             startTimeNanos=nano(weight["seconds_from_dawn"]),
-            value=[dict(fpVal=weight["weight"]/POUNDS_PER_KILOGRAM)],
+            value=[dict(fpVal=weight["weight"]/unit)],
         ))
     return gfit_weights
 

@@ -89,7 +89,8 @@ ENV/
 .ropeproject
 
 # Secrets
-secrets.yml
+client_secret.json
+api_key.txt
 
 # macOS
 .DS_Store
