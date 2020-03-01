@@ -1,6 +1,6 @@
 # weight-csv-to-gfit
 Small python script for load bulk weight/steps data to a Google Fit account.
-This is a fork of [motherapp](https://github.com/motherapp)'s [weight-csv-to-gfit](https://github.com/motherapp/weight-csv-to-gfit).
+Original code is [here](https://github.com/motherapp/weight-csv-to-gfit).
 
 ## Requirements
 To run this script, you will need:
