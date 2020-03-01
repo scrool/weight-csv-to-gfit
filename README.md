@@ -14,6 +14,7 @@ To run this script, you will need:
 git clone https://github.com/TadWohlrapp/weight-csv-to-gfit.git
 cd weight-csv-to-gfit
 virtualenv -p /usr/bin/python2.7 venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
