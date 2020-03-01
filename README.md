@@ -7,7 +7,7 @@ To run this script, you will need:
 
  - `python 2.7` 
  - `pip` 
- -  `virtualenv`
+ -  `virtualenv` (to get it: pip install virtualenv)
 
 ## Download and installation
 ```
