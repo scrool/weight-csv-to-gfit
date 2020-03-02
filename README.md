@@ -6,7 +6,7 @@ Original code is [here](https://github.com/motherapp/weight-csv-to-gfit).
 To run this script, you will need:
 
  - `python 2.7` 
- - `pip` 
+ - `pip` (sudo apt install python-pip)
  -  `virtualenv` (to get it: pip install virtualenv)
 
 ## Download and installation
