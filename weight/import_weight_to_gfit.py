@@ -35,9 +35,9 @@ SCOPE = 'https://www.googleapis.com/auth/fitness.body.write'
 f = open("../api_key.txt", "r")
 API_KEY = f.read()
 
-def import_weight_to_gfit():
-    # first step of auth
-    flow = OAuth2WebServerFlow(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, scope=SCOPE, redirect_uri=REDIRECT_URI)
+
+def get_o2authorized_http(client_id, client_secret, redirect_uri):
+    flow = OAuth2WebServerFlow(client_id=client_id, client_secret=client_secret, scope=SCOPE, redirect_uri=redirect_uri)
     auth_uri = flow.step1_get_authorize_url()
     print "Copy this url to web browser for authorization: "
     print auth_uri
@@ -47,8 +47,17 @@ def import_weight_to_gfit():
     token = raw_input("Copy the Authorization code and input here: ")
     cred = flow.step2_exchange(token)
     http = httplib2.Http()
-    http = cred.authorize(http)
-    fitness_service = build('fitness','v1', http=http, developerKey=API_KEY)
+    return cred.authorize(http)
+
+
+def discover_fitness_service(http, developer_key):
+    # first step of auth
+    return build('fitness','v1', http=http, developerKey=developer_key)
+
+
+def import_weight_to_gfit():
+    http = get_o2authorized_http(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+    fitness_service = discover_fitness_service(http, API_KEY)
 
     # init the fitness objects
     fitusr = fitness_service.users()
