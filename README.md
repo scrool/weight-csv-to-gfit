@@ -18,6 +18,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+
+## Input data
+1. Export weight data from Withings
+2. Place `weight.csv` to the project's main folder
+
+
 ## Acquire OAuth Credentials and API Key
 ### OAuth client ID
 1. Go to https://console.developers.google.com/apis/credentials

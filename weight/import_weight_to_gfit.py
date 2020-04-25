@@ -96,16 +96,10 @@ def import_weight_to_gfit():
             body=data_source).execute()
 
 
-    unit = raw_input("Does your .csv use kilograms or pounds? Type kg or lb: ")
-    if unit == "lb":
-        multiplier = 2.20462
-    elif unit == "kg":
-        multiplier = 1
-    weights = read_weights_csv_with_gfit_format(multiplier)
-    print 'got weights in',unit,'...'
-    
-    min_log_ns = weights[0]["startTimeNanos"]
-    max_log_ns = weights[-1]["startTimeNanos"]
+    weights = read_weights_csv_with_gfit_format('../weight.csv')
+
+    min_log_ns = weights[-1]["startTimeNanos"]
+    max_log_ns = weights[0]["startTimeNanos"]
     dataset_id = '%s-%s' % (min_log_ns, max_log_ns)
 
     # patch data to google fit
