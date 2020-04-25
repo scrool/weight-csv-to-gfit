@@ -14,6 +14,10 @@ from oauth2client.client import OAuth2WebServerFlow
 from read_weight_csv import read_weights_csv_with_gfit_format
 from googleapiclient.errors import HttpError
 
+# Change these to match your scale
+MODEL = 'smart-body-analyzer'
+UID = 'ws-50'
+
 f = open('../client_secret.json', 'r')
 data = f.read()
 jsondata = json.loads(data)
@@ -60,8 +64,8 @@ def import_weight_to_gfit():
         device=dict(
           type='scale',
           manufacturer='withings',
-          model='smart-body-analyzer',
-          uid='ws-50',
+          model=MODEL,
+          uid=UID,
           version='1.0',
         )
       )
