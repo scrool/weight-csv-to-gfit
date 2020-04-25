@@ -92,5 +92,8 @@ ENV/
 client_secret.json
 api_key.txt
 
+# Standard discovery document
+fitness-v1-discoverydocument.json
+
 # macOS
 .DS_Store

@@ -6,13 +6,20 @@
 import json
 import httplib2
 import re
-from apiclient.discovery import build
+from apiclient.discovery import build, build_from_document
 
 from oauth2client.file import Storage
 from oauth2client.client import AccessTokenRefreshError
 from oauth2client.client import OAuth2WebServerFlow
 from read_weight_csv import read_weights_csv_with_gfit_format
 from googleapiclient.errors import HttpError
+
+
+# Trusted testers can download discovery document from the developers page:
+# https://www.googleapis.com/discovery/v1/apis/fitness/v1/rest
+# and direct following constant its filename, e.g.
+# "../fitness-v1-discoverydocument.json"
+DISCOVERY_FILE = None
 
 # Change these to match your scale
 MODEL = 'smart-body-analyzer'
@@ -34,6 +41,11 @@ def get_o2authorized_http(client_id, client_secret, redirect_uri):
     cred = flow.step2_exchange(token)
     http = httplib2.Http()
     return cred.authorize(http)
+
+
+def read_fitness_service(http, discovery_json_data):
+    jsondata = json.loads(doc)
+    return build_from_document(jsondata, http=http)
 
 
 def discover_fitness_service(http, developer_key):
@@ -120,10 +132,15 @@ if __name__=="__main__":
 
     project_id = secrets['project_id']
 
-    f = open("../api_key.txt", "r")
-    api_key = f.read()
-
     http = get_o2authorized_http(secrets['client_id'], secrets['client_secret'], secrets['redirect_uris'][0])
-    fitness_service = discover_fitness_service(http, api_key)
+
+    if not DISCOVERY_FILE:
+        f = open("../api_key.txt", "r")
+        api_key = f.read()
+        fitness_service = discover_fitness_service(http, api_key)
+    else:
+        with open(DISCOVERY_FILE, "r") as f:
+            doc = f.read()
+        fitness_service = read_fitness_service(http, doc)
 
     import_weight_to_gfit(fitness_service, project_id)
