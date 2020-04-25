@@ -6,11 +6,13 @@
 import json
 import httplib2
 import re
+import sys
 from apiclient.discovery import build, build_from_document
 
 from oauth2client.file import Storage
 from oauth2client.client import AccessTokenRefreshError
 from oauth2client.client import OAuth2WebServerFlow
+from oauth2client.client import AccessTokenCredentials
 from read_weight_csv import read_weights_csv_with_gfit_format
 from googleapiclient.errors import HttpError
 
@@ -41,6 +43,11 @@ def get_o2authorized_http(client_id, client_secret, redirect_uri):
     cred = flow.step2_exchange(token)
     http = httplib2.Http()
     return cred.authorize(http)
+
+def get_o2authorized_http_token(access_token):
+    credentials = AccessTokenCredentials(access_token, 'weight-csv-to-gfit/1.0')
+    http = httplib2.Http()
+    return credentials.authorize(http)
 
 
 def read_fitness_service(http, discovery_json_data):
@@ -125,14 +132,18 @@ def import_weight_to_gfit(fitness_service, project_id):
         datasetId=dataset_id).execute()
 
 if __name__=="__main__":
-    f = open('../client_secret.json', 'r')
-    data = f.read()
-    jsondata = json.loads(data)
-    secrets = jsondata['web']
+    if len(sys.argv) == 3:
+        project_id = sys.argv[1]
+        http = get_o2authorized_http_token(sys.argv[2])
+    else:
+        f = open('../client_secret.json', 'r')
+        data = f.read()
+        jsondata = json.loads(data)
+        secrets = jsondata['web']
 
-    project_id = secrets['project_id']
+        project_id = secrets['project_id']
 
-    http = get_o2authorized_http(secrets['client_id'], secrets['client_secret'], secrets['redirect_uris'][0])
+        http = get_o2authorized_http(secrets['client_id'], secrets['client_secret'], secrets['redirect_uris'][0])
 
     if not DISCOVERY_FILE:
         f = open("../api_key.txt", "r")
