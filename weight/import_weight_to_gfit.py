@@ -18,22 +18,8 @@ from googleapiclient.errors import HttpError
 MODEL = 'smart-body-analyzer'
 UID = 'ws-50'
 
-f = open('../client_secret.json', 'r')
-data = f.read()
-jsondata = json.loads(data)
-secrets = jsondata['web']
-
-CLIENT_ID = secrets['client_id']
-CLIENT_SECRET = secrets['client_secret']
-
-REDIRECT_URI = secrets['redirect_uris'][0]
-PROJECT_ID = secrets['project_id']
-
 # See scope here: https://developers.google.com/fit/rest/v1/authorization
 SCOPE = 'https://www.googleapis.com/auth/fitness.body.write'
-
-f = open("../api_key.txt", "r")
-API_KEY = f.read()
 
 
 def get_o2authorized_http(client_id, client_secret, redirect_uri):
@@ -55,10 +41,7 @@ def discover_fitness_service(http, developer_key):
     return build('fitness','v1', http=http, developerKey=developer_key)
 
 
-def import_weight_to_gfit():
-    http = get_o2authorized_http(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-    fitness_service = discover_fitness_service(http, API_KEY)
-
+def import_weight_to_gfit(fitness_service, project_id):
     # init the fitness objects
     fitusr = fitness_service.users()
     fitdatasrc = fitusr.dataSources()
@@ -83,7 +66,7 @@ def import_weight_to_gfit():
       return ':'.join((
         dataSource['type'],
         dataSource['dataType']['name'],
-        re.sub("api-project-", "",PROJECT_ID),
+        re.sub("api-project-", "", project_id),
         dataSource['device']['manufacturer'],
         dataSource['device']['model'],
         dataSource['device']['uid']
@@ -130,4 +113,17 @@ def import_weight_to_gfit():
         datasetId=dataset_id).execute()
 
 if __name__=="__main__":
-    import_weight_to_gfit()
+    f = open('../client_secret.json', 'r')
+    data = f.read()
+    jsondata = json.loads(data)
+    secrets = jsondata['web']
+
+    project_id = secrets['project_id']
+
+    f = open("../api_key.txt", "r")
+    api_key = f.read()
+
+    http = get_o2authorized_http(secrets['client_id'], secrets['client_secret'], secrets['redirect_uris'][0])
+    fitness_service = discover_fitness_service(http, api_key)
+
+    import_weight_to_gfit(fitness_service, project_id)
